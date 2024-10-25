@@ -7,18 +7,18 @@ int dif_primes[N];
 long long ans[N];
 
 void sieve () {
-	for (int i = 2; i < N; ++i) {
-		is_prime[i] = 1;
-	}
-	for (int i = 2; i < N; ++i) {
-		if (is_prime[i]) {
-			dif_primes[i] = 1;
-			for (int j = i + i; j < N; j += i) {
-				is_prime[j] = 0;
-				++dif_primes[j];
-			}
-		}
-	}
+  for (int i = 2; i < N; ++i) {
+    is_prime[i] = 1;
+  }
+  for (int i = 2; i < N; ++i) {
+    if (is_prime[i]) {
+      dif_primes[i] = 1;
+      for (int j = i + i; j < N; j += i) {
+        is_prime[j] = 0;
+        ++dif_primes[j];
+      }
+    }
+  }
 }
 
 int main () {
@@ -33,26 +33,26 @@ int main () {
   int pw2[20];
   pw2[0] = 1;
   for (int i = 1; i < 20; ++i) {
-  	pw2[i] = pw2[i - 1] * 2;
+    pw2[i] = pw2[i - 1] * 2;
   }
   sieve();
   for (int g = 1; g < N; ++g) {
-  	for (int l = g; l + g < N; l += g) {
-  		int left = l / g;
-  		if (dif_primes[left] <= 1) {
-  			ans[l + g]++;
-  		}
-  		else {
-  			ans[l + g] += pw2[dif_primes[left] - 1];
-  		}
-  	}
+    for (int l = g; l + g < N; l += g) {
+      int left = l / g;
+      if (dif_primes[left] <= 1) {
+        ans[l + g]++;
+      }
+      else {
+        ans[l + g] += pw2[dif_primes[left] - 1];
+      }
+    }
   }
   int tt;
   cin >> tt;
   while (tt--) {
-  	int x;
-  	cin >> x;
-  	cout << ans[x] << "\n";
+    int x;
+    cin >> x;
+    cout << ans[x] << "\n";
   }
 
   return 0;
