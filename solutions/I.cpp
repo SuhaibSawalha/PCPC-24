@@ -19,35 +19,36 @@ int main () {
     return 0;
   }
   vector<vector<array<int, 3>>> adj(n);
+  vector<array<int, 3>> edges;
   for (int i = 0; i < m; ++i) {
     int u, v, b, d;
     cin >> u >> v >> b >> d, --u, --v;
     adj[u].push_back({v, b, d});
     adj[v].push_back({u, b, d});
+    edges.push_back({b, u, v});
   }
-  vector<int> vis(n);
-  int vid = 0;
-  function<void(int, int)> dfs = [&] (int u, int mb) {
-    if (vis[u] == vid) {
-      return;
-    }
-    vis[u] = vid;
-    for (auto &v : adj[u]) {
-      if (v[1] >= mb) {
-        dfs(v[0], mb);
+  vector<int> dsu(n), sz(n, 1);
+  iota(dsu.begin(), dsu.end(), 0);
+  int l;
+  sort(edges.rbegin(), edges.rend());
+  function<int(int)> find = [&] (int u) {
+    return u == dsu[u] ? u : dsu[u] = find(dsu[u]);
+  };
+  auto unite = [&] (int u, int v) {
+    u = find(u), v = find(v);
+    if (u != v) {
+      if (sz[u] < sz[v]) {
+        swap(u, v);
       }
+      dsu[v] = u;
+      sz[u] += sz[v];
     }
   };
-  int l = 1, r = 1e9;  
-  while (l < r) {
-    int mid = (l + r + 1) / 2;
-    ++vid;
-    dfs(S, mid);
-    if (vis[E] == vid) {
-      l = mid;
-    }
-    else {
-      r = mid - 1;
+  for (auto &e : edges) {
+    l = e[0];
+    unite(e[1], e[2]);
+    if (find(S) == find(E)) {
+      break;
     }
   }
   priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> pq;
